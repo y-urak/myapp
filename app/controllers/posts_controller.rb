@@ -7,10 +7,12 @@ class PostsController < ApplicationController
     end
     def new
         @post = Post.new
+        authorize @post
     end
     def create
         #render plain: "受信パラメター  : #{params}"
-        @post = Post.new(post_params)
+        @post = Post.new(post_params.merge({user_id: session[:user_id]}))
+        authorize @post
         if @post.save
             redirect_to posts_path
         else
@@ -22,6 +24,7 @@ class PostsController < ApplicationController
     end
     def update
         @post = Post.find(params[:id])
+        authorize @post
         if @post.update(post_params)
             redirect_to posts_path
         else
@@ -30,6 +33,7 @@ class PostsController < ApplicationController
     end
     def destroy
         @post = Post.find(params[:id])
+        authorize @post
         @post.destroy
         redirect_to posts_path
     end
